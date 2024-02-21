@@ -1,0 +1,25 @@
+--cpu Cortex-M0
+"lab1gpio\startup_stm32f072xb.o"
+"lab1gpio\main.o"
+"lab1gpio\stm32f0xx_it.o"
+"lab1gpio\stm32f0xx_hal_msp.o"
+"lab1gpio\stm32f0xx_hal_tim.o"
+"lab1gpio\stm32f0xx_hal_tim_ex.o"
+"lab1gpio\stm32f0xx_hal_rcc.o"
+"lab1gpio\stm32f0xx_hal_rcc_ex.o"
+"lab1gpio\stm32f0xx_hal.o"
+"lab1gpio\stm32f0xx_hal_i2c.o"
+"lab1gpio\stm32f0xx_hal_i2c_ex.o"
+"lab1gpio\stm32f0xx_hal_gpio.o"
+"lab1gpio\stm32f0xx_hal_dma.o"
+"lab1gpio\stm32f0xx_hal_cortex.o"
+"lab1gpio\stm32f0xx_hal_pwr.o"
+"lab1gpio\stm32f0xx_hal_pwr_ex.o"
+"lab1gpio\stm32f0xx_hal_flash.o"
+"lab1gpio\stm32f0xx_hal_flash_ex.o"
+"lab1gpio\stm32f0xx_hal_exti.o"
+"lab1gpio\system_stm32f0xx.o"
+--strict --scatter "lab1GPIO\lab1GPIO.sct"
+--summary_stderr --info summarysizes --map --load_addr_map_info --xref --callgraph --symbols
+--info sizes --info totals --info unused --info veneers
+--list "lab1GPIO.map" -o lab1GPIO\lab1GPIO.axf
