@@ -114,9 +114,9 @@ int main(void)
 //			Exercise 4.1 
 //	while(1)
 //	{
-////		if((USART3->ISR & USART_ISR_RXNE) != 0)
+//		if((USART3->ISR & USART_ISR_RXNE) != 0)
 //		{
-//			char value = USART3->RDR;
+//			char value = USART3->RDR ;
 //			switch(value){
 //				case 'r':
 //					GPIOC->ODR ^= (1 << 6);
@@ -134,24 +134,26 @@ int main(void)
 //				default:
 //					TransString("error\n");
 //				}		
-//	}
-	//
-	//	}
-	
-	// initial cmd message
+//			}
+//		}
+//}
+
+	// Next Check Off
+	// initial cmd message 
 	TransString("CMD?");
 	// Initial flag
 	flag = 0;
 	
+
 	while(1)
 	{
-				
 		if(flag == 1)
 		{
 			TransChar(currdata); // Display Command Characters
 			
-				//Turn Off LEDs when 0
-				if(currdata== '0'){
+			switch(currdata){
+				//Turn Off when 0
+				case '0':
 					switch(lastdata){
 						case 'r':
 							GPIOC->ODR &= ~(1 << 6);
@@ -173,73 +175,83 @@ int main(void)
 							TransString("\nGreen off\r\n");
 							TransString("CMD?\r\n");
 							break;
-						
+						//Error
 						default: 
 							TransString("Wrong Input\r\n");
 					}
-				}
-				// turn on LEDs when 1
-				else if(currdata== '1'){
+					break;
+				// turn on when 1
+				case '1':
 					switch(lastdata)
 					{	
+						//Turn on Red
 						case 'r':
 							GPIOC->ODR |= (1 << 6);
 							TransString("\nRed on\r\n");
 							TransString("CMD?\r\n");
 							break;
+						//Turn on Blue
 						case 'b':
 							GPIOC->ODR |= (1 << 7);
 							TransString("\nBlue on\r\n");
 							TransString("CMD?\r\n");
 							break;
-						case 'o':
-							GPIOC->ODR |= (1 << 8);
-							TransString("\nOrange on\r\n");
-							TransString("CMD?\r\n");
-							break;
+						//Turn on Green
 						case 'g':
 							GPIOC->ODR |= (1 << 9);
 							TransString("\nGreen on\r\n");
 							TransString("CMD?\r\n");
 							break;
-						
+						//Turn on Orange
+						case 'o':
+							GPIOC->ODR |= (1 << 8);
+							TransString("\nOrange on\r\n");
+							TransString("CMD?\r\n");
+							break;
+						//Error
 						default: 
 							TransString("Wrong Input\r\n");
 					}
+					break;
 				
-				}
-				// Toggle LEDs
-				else if(currdata== '2'){
+				//Toggle
 
+				case '2':
 					switch(lastdata)
 					{	
+						//Toggle Red
 						case 'r':
 							GPIOC->ODR ^= (1 << 6);
 							TransString("\nRed toggle\r\n");
 							TransString("CMD?\r\n");
 							break;
+						//Toggle Blue
 						case 'b':
 							GPIOC->ODR ^= (1 << 7);
 							TransString("\nBlue toggle\r\n");
 							TransString("CMD?\r\n");
 							break;
-						case 'o':
-							GPIOC->ODR ^= (1 << 8);
-							TransString("\nOrange toggle\r\n");
-							TransString("CMD?\r\n");
-							break;
+						//Toggle Green
 						case 'g':
 							GPIOC->ODR ^= (1 << 9);
 							TransString("\nGreen toggle \r\n");
 							TransString("CMD?\r\n");
 							break;
-				
+						//Toggle Orange
+						case 'o':
+							GPIOC->ODR ^= (1 << 8);
+							TransString("\nOrange toggle\r\n");
+							TransString("CMD?\r\n");
+							break;
+						//Error
 						default: 
 							TransString("Wrong Input\r\n");
 					}
-				}
-				else{ 
+					break;
+				
+						default:
 						if((currdata != 'r' & currdata != 'g' & currdata != 'b' & currdata != 'o')){
+						
 						TransString("Wrong Input\r\n");
 						}
 				}
