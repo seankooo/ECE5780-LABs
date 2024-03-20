@@ -54,13 +54,13 @@ PCD_HandleTypeDef hpcd_USB_FS;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
-static void MX_I2C2_Init(void);
-static void MX_SPI2_Init(void);
-static void MX_TSC_Init(void);
-static void MX_USB_PCD_Init(void);
-void I2CWriteCheck1(void);
-void I2CReadCheck1(void);
+//static void MX_GPIO_Init(void);
+//static void MX_I2C2_Init(void);
+//static void MX_SPI2_Init(void);
+//static void MX_TSC_Init(void);
+//static void MX_USB_PCD_Init(void);
+//void I2CWriteCheck1(void);
+//void I2CReadCheck1(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -94,22 +94,16 @@ int main(void)
 
   /* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_I2C2_Init();
-  MX_SPI2_Init();
-  MX_TSC_Init();
-  MX_USB_PCD_Init();
 	
-	
-  /* USER CODE BEGIN 2 */
-	
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-	
+	//initalize the RCC clocks for gpio c and b
 	RCC->AHBENR |= RCC_AHBENR_GPIOCEN;
+	RCC->AHBENR |= RCC_AHBENR_GPIOBEN;
+	
+	//Initalize I2C clock
+	RCC->APB1ENR |= RCC_APB1ENR_I2C2EN;
+
+
+
 
 		// Initializing LEDs
 	GPIO_InitTypeDef ledInitStr = {GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_8 | GPIO_PIN_9,
@@ -134,11 +128,11 @@ int main(void)
 	
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);  // set pin8 high
 
-//// initialize PB15 to input mode
-//  GPIO_InitTypeDef initStr3 = {GPIO_PIN_15, 
-//                               GPIO_MODE_INPUT,  // INPUT mode
-//                               GPIO_SPEED_FREQ_LOW, GPIO_NOPULL};
-//  HAL_GPIO_Init(GPIOB, &initStr3);
+// initialize PB15 to input mode
+  GPIO_InitTypeDef initStr3 = {GPIO_PIN_15, 
+                               GPIO_MODE_INPUT,  // INPUT mode
+                               GPIO_SPEED_FREQ_LOW, GPIO_NOPULL};
+  HAL_GPIO_Init(GPIOB, &initStr3);
 	
 	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_14, GPIO_PIN_SET);  // set pin8 high
 
@@ -152,23 +146,32 @@ int main(void)
 															
 
 															 
+															 
+															 
+															 
+															 
+															 
+															 
+															 
+															 
+															 
 	// set PB11 and PB 13 to I2C2_SDA and I2C2_SCL 
 	// PB11- af1, PB13- AF5
-	GPIOC->AFR[1] &= ~(1 << 15);
-	GPIOC->AFR[1] &= ~(1 << 14);
-	GPIOC->AFR[1] &= ~(1 << 13);
-	GPIOC->AFR[1] |= (1 << 12);
+	GPIOB->AFR[1] &= ~(1 << 15);
+	GPIOB->AFR[1] &= ~(1 << 14);
+	GPIOB->AFR[1] &= ~(1 << 13);
+	GPIOB->AFR[1] |= (1 << 12);
 															 
 	// PB13- AF5														 
-	GPIOC->AFR[1] &= ~(1 << 23);	
-	GPIOC->AFR[1] |= (1 << 22);
-	GPIOC->AFR[1] &= ~(1 << 21);
-	GPIOC->AFR[1] |= (1 << 20);													 
+	GPIOB->AFR[1] &= ~(1 << 23);	
+	GPIOB->AFR[1] |= (1 << 22);
+	GPIOB->AFR[1] &= ~(1 << 21);
+	GPIOB->AFR[1] |= (1 << 20);													 
 		
-	RCC->APB1ENR |= RCC_APB1ENR_I2C2EN;
 								
-	I2C2->TIMINGR |= I2C_TIMINGR_PRESC_Pos;
+	I2C2->TIMINGR |= (0x1<<28); //presc =1
 	// SCLL = 0X13
+	
 	I2C2->TIMINGR	|= (1<<0);
 	I2C2->TIMINGR	|= (1<<1);
 	I2C2->TIMINGR	&= ~(1<<2);
@@ -179,6 +182,7 @@ int main(void)
 	I2C2->TIMINGR	&= ~(1<<6);
 	I2C2->TIMINGR	&= ~(1<<7);
 	//SCLH = 0XF
+	
 	I2C2->TIMINGR	|= (1<<8);
 	I2C2->TIMINGR	|= (1<<9);
 	I2C2->TIMINGR	|= (1<<10);
@@ -189,6 +193,7 @@ int main(void)
 	I2C2->TIMINGR	&= ~(1<<14);
 	I2C2->TIMINGR	&= ~(1<<15);
 	//SDADEL = 0X2
+	
 	I2C2->TIMINGR	&= ~(1<<16);
 	I2C2->TIMINGR	|= (1<<17);
 	I2C2->TIMINGR	&= ~(1<<18);
@@ -199,21 +204,21 @@ int main(void)
 	I2C2->TIMINGR	|= (1<<22);
 	I2C2->TIMINGR	&= ~(1<<23);
 	
-	I2C2->CR1 = I2C_CR1_PE;	//PERIPHERAL ENABLE
+	I2C2->CR1 |= (1<<0);	//PERIPHERAL ENABLE
 	
 	// SADD(SLAVE ADDRESS) TO 0X69 = 0110 1001
-	I2C2->CR2 |= (1<<0);
-	I2C2->CR2 &= ~(1<<1);
-	I2C2->CR2 &= ~(1<<2);
-	I2C2->CR2 |= (1<<3);
 	
-	I2C2->CR2 &= ~(1<<4);
-	I2C2->CR2 |= (1<<5);
+	I2C2->CR2 |= (1<<1);
+	I2C2->CR2 &= ~(1<<2);
+	I2C2->CR2 &= ~(1<<3);
+	I2C2->CR2 |= (1<<4);
+	
+	I2C2->CR2 &= ~(1<<5);
 	I2C2->CR2 |= (1<<6);
-	I2C2->CR2 &= ~(1<<7);
-	I2C2->CR2 &= ~(1<<8);
-	I2C2->CR2 &= ~(1<<9);
+	I2C2->CR2 |= (1<<7);
+
 	//SET NUMBER OF BYTES TO TRANSMIT TO 1
+//	
 	I2C2->CR2 |= (1<<16);
 	I2C2->CR2 &= ~(1<<17);
 	I2C2->CR2 &= ~(1<<18);
@@ -233,101 +238,296 @@ int main(void)
 											
   /* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+// 
+//	
+////---------------------First Checkoff Starts-----------------------
+
+//	/*--------------------WRITE------------------------------------*/
+//  while (1)
+//  { 
+//		if((I2C2->ISR & I2C_ISR_TXIS)){
+//			break;
+//		}
+//	}
+//	//setting the address of the who-am-i register to 0x0F
+//	 I2C2->TXDR = 0x0F;
+//	
+//	//Wait for TC flag
+//	 while(1){
+//		 if((I2C2->ISR & I2C_ISR_TC)){
+//			 break;
+//		 }
+//	 }
+//		// SADD(SLAVE ADDRESS) TO 0X69 = 0110 1001
+
+//	I2C2->CR2 |= (1<<1);
+//	I2C2->CR2 &= ~(1<<2);
+//	I2C2->CR2 &= ~(1<<3);
+//	I2C2->CR2 |= (1<<4);
+//	
+//	I2C2->CR2 &= ~(1<<5);
+//	I2C2->CR2 |= (1<<6);
+//	I2C2->CR2 |= (1<<7);
+//			//SET NUMBER OF BYTES TO TRANSMIT TO 1
+//			I2C2->CR2 |= (0x01<<16);
+//		
+
+//			// RD_WRN TO READ89
+//			I2C2->CR2 |= (1<<10);
+//			
+//			//SET START BIT
+//			I2C2->CR2 |= (1<<13);
+//			
+//	/*------------------------READ---------------------------*/
+//			
+//			while(1){
+//				if((I2C2-> ISR & I2C_ISR_RXNE)){
+//					break;
+//				}
+//			}
+//			while(1){
+//				if((I2C2->ISR & I2C_ISR_TC)){
+//					break;
+//				}
+//			}
+//			  
+//		if(I2C2->RXDR == 0xD3){
+//			GPIOC->ODR |= (1 << 9);
+//		}
+//		 I2C2->CR2 |= (1 << 14);
+//}
+
+
+//// ------------------------------First checkoff End----------------------------
+
+
+//--------------------------Second Checkoff Start--------------------------------
+// address for the gyroscope is 0x69
+//enable gyroscope
+// SADD(SLAVE ADDRESS) TO 0X69 = 0110 1001
+	I2C2->CR2|= (0x69<<1);
 	
+//	I2C2->CR2 |= (1<<1);
+//	I2C2->CR2 &= ~(1<<2);
+//	I2C2->CR2 &= ~(1<<3);
+//	I2C2->CR2 |= (1<<4);
+//	
+//	I2C2->CR2 &= ~(1<<5);
+//	I2C2->CR2 |= (1<<6);
+//	I2C2->CR2 |= (1<<7);
+
+	//SET NUMBER OF BYTES TO TRANSMIT TO 2
+//	
+	I2C2->CR2 &= ~(1<<16);
+	I2C2->CR2 |= (1<<17);
+
+
+// RD_WRN TO WRITE =0
+	I2C2->CR2 &= ~(1<<10);
 	
+	//SET START BIT
+	I2C2->CR2 |= (1<<13);
+	
+	/*--------------------Enable Gyroscope - normal mode, enX, enY ------------------------------------*/
   while (1)
   { 
-		//turn blue LED to see if it is in the while loop 
-		GPIOC->ODR |= (1 << 7);
-		I2CWriteCheck1();
-		I2CReadCheck1();
+		if((I2C2->ISR & I2C_ISR_TXIS)){
+			break;
+		}
 	}
-  /* USER CODE END 3 */
-}
-
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void I2CWriteCheck1(void)
-{
-	if(I2C2->ISR & I2C_ISR_TXIS_Pos){
-		 //setting the address of the who-am-i register to 0xd3 
-		 I2C2->TXDR |= (1<<0);
-		 I2C2->TXDR |= (1<<1);
-		 I2C2->TXDR &=~(1<<2);
-		 I2C2->TXDR &=~(1<<3);
-		 
-		 I2C2->TXDR |= (1<<4);
-		 I2C2->TXDR &=~(1<<5);
-		 I2C2->TXDR |= (1<<6);
-		 I2C2->TXDR |= (1<<7);
-		
-		
-		if (I2C2->ISR & I2C_ISR_TC_Pos ){
-		I2C2->CR1 = I2C_CR1_PE;	//PERIPHERAL ENABLE
+	//setting the address of the CTRL_REG1
+	 I2C2->TXDR = 0x20;
 	
-				// SADD(SLAVE ADDRESS) TO 0X69 = 0110 1001
-			I2C2->CR2 |= (1<<0);
-			I2C2->CR2 &= ~(1<<1);
-			I2C2->CR2 &= ~(1<<2);
-			I2C2->CR2 |= (1<<3);
-			
-			I2C2->CR2 &= ~(1<<4);
-			I2C2->CR2 |= (1<<5);
-			I2C2->CR2 |= (1<<6);
-			I2C2->CR2 &= ~(1<<7);
-			I2C2->CR2 &= ~(1<<8);
-			I2C2->CR2 &= ~(1<<9);
-			//SET NUMBER OF BYTES TO TRANSMIT TO 1
-			I2C2->CR2 |= (1<<16);
-			I2C2->CR2 &= ~(1<<17);
-			I2C2->CR2 &= ~(1<<18);
-			I2C2->CR2 &= ~(1<<19);
-			
-			I2C2->CR2 &= ~(1<<20);
-			I2C2->CR2 &= ~(1<<21);
-			I2C2->CR2 &= ~(1<<22);
-			I2C2->CR2 &= ~(1<<23);
+	 while (1)
+  { 
+		if((I2C2->ISR & I2C_ISR_TXIS)){
+			break;
+		}
+	}
+		 I2C2->TXDR = 0xB;		// 1011
 
-			// RD_WRN TO READ89
-			I2C2->CR2 |= (1<<10);
+	//Wait for TC flag
+	 while(1){
+		 if((I2C2->ISR & I2C_ISR_TC)){
+			 break;
+		 }
+	 }
+	I2C2->CR2 |= (1 << 14); //stop
+	
+		
+			
+	/*------------------------Read X Data---------------------------*/
+	 
+			//initiate x,y variables
+	 int8_t x1;
+	 int8_t x2;
+	 int8_t y1;
+	 int8_t y2;
+	 int16_t x;
+	 int16_t y;
+	 
+		while(1){
+		HAL_Delay(100);
+				//SET NUMBER OF BYTES TO TRANSMIT TO 1
+		I2C2->CR2 |= (1<<16);
+		I2C2->CR2 &= ~(1<<17);
+
+			// RD_WRN TO Write
+		I2C2->CR2 &= ~(1<<10);
 			
 			//SET START BIT
-			I2C2->CR2 |= (1<<13);
-	 }
- }
-	else{ 		//NACKF FLAG THEN TURN LED RED ON
-		GPIOC->ODR |= (1 << 8);
-	}
-
-	
-}
-	
-
-void I2CReadCheck1(void){
-	//check if RXNE flag
-	if(I2C2-> ISR & I2C_ISR_RXNE_Pos){
-		// check if TC flag.
-		if(I2C2->ISR & I2C_ISR_TC_Pos	){
-//		GPIOC->ODR |= (1 << 9);
-
-			volatile uint8_t RXDRValue = I2C2->RXDR & 0xFF;
-					
-				 if(RXDRValue == 0xD3){ //if they are matching, turn green LED on 
-					 GPIOC->ODR |= (1 << 9);
-					 I2C2->CR2 |= I2C_CR2_STOP;
-				 }
+		I2C2->CR2 |= (1<<13);
+		
+				while(1) {
+					if((I2C2-> ISR & I2C_ISR_TXIS)){
+						break;
+					}
+				}
+		I2C2->TXDR = 0xA8; //x data h, l combined
+			
+			while(1){
+				if((I2C2->ISR & I2C_ISR_TC)){
+					break;
+				}
 			}
-	}
-	else {		//NACKF FLAG THEN TURN LED RED ON
-				GPIOC->ODR |= (1 << 6);
+			
+				//SET NUMBER OF BYTES TO TRANSMIT TO 2
+		I2C2->CR2 &= ~(1<<16);
+		I2C2->CR2 |= (1<<17);
 
+			// RD_WRN TO READ (READ=1, WRT=0)
+		I2C2->CR2 |= (1<<10);
+			
+			//SET START BIT 
+		I2C2->CR2 |= (1<<13);
+			
+			while(1) {
+					if((I2C2-> ISR & I2C_ISR_RXNE)){
+						break;
+					}
+				}
+			x1= I2C2->RXDR;
+				
+			while(1) {
+					if((I2C2-> ISR & I2C_ISR_RXNE)){
+						break;
+					}
+			}
+			x2=  I2C2->RXDR;
+			while(1){
+				if((I2C2->ISR & I2C_ISR_TC)){
+					break;
+				}
+			}
+			//stop
+			I2C2->CR2 |= (1<<14);
+			
+			  
+//----------------------READ Y DATA----------------------
+				//SET NUMBER OF BYTES TO TRANSMIT TO 1
+		I2C2->CR2 |= (1<<16);
+		I2C2->CR2 &= ~(1<<17);
+			// RD_WRN TO write (READ=1, WRT=0)
+		I2C2->CR2 &= ~(1<<10);
+			//SET START BIT
+		I2C2->CR2 |= (1<<13);
+			
+			// SEND Y ADDRESS
+				while(1) {
+					if((I2C2-> ISR & I2C_ISR_TXIS)){
+						break;
+					}
+				}
+		I2C2->TXDR = 0xAA;	// Y DATA LOW, HIGH COMBINED ADDRESS
+			
+			while(1){
+				if((I2C2->ISR & I2C_ISR_TC)){
+					break;
+				}
+			}
+				//SET NUMBER OF BYTES TO TRANSMIT TO 2
+		I2C2->CR2 &= ~(1<<16);
+		I2C2->CR2 |= (1<<17);
+
+			// RD_WRN TO READ (READ=1, WRT=0)
+		I2C2->CR2 |= (1<<10);
+			
+			//SET START BIT 
+		I2C2->CR2 |= (1<<13);
+
+			//RX Y DATA
+	while(1) {
+					if((I2C2-> ISR & I2C_ISR_RXNE)){
+						break;
+					}
+				}
+			y1= I2C2->RXDR;
+				
+			while(1) {
+					if((I2C2-> ISR & I2C_ISR_RXNE)){
+						break;
+					}
+			}
+			y2=  I2C2->RXDR;
+			while(1){
+				if((I2C2->ISR & I2C_ISR_TC)){
+					break;
+				}
+			}
+			// stop transaction
+			I2C2->CR2 |= (1<<14);
+			
+		//--------------------end of x,y data read-----------------------------
+		x = (uint16_t)((x2 << 8) | x1);
+		y = (uint16_t)((y2 << 8) | y1);
+			int threshhold= 130;
+
+	if (x > threshhold) {	// x,y  value default = +-245 
+		//turn green on, orange off
+			GPIOC->ODR |= (1 << 9);
+		  GPIOC->ODR &= ~(1 << 8);
 	}
+	else if (x < -threshhold){
+			// turn Orange on, green off
+			GPIOC->ODR |= (1 << 8);
+		  GPIOC->ODR &= ~(1 << 9);
+	}
+	
+	else if( y >threshhold){
+		//turn red on, blue off
+			GPIOC->ODR |= (1 << 6);
+		  GPIOC->ODR &= ~(1 << 7);
+	}
+		else if( y < -threshhold){
+			//turn blue on, red off
+			GPIOC->ODR |= (1 << 7);
+		  GPIOC->ODR &= ~(1 << 6);
+	}
+	
+}
+		
+
+
+
+
+
+	
+
+
+
+
+
+
 
 }
+
+
+
+
+
+
+
+
 
 void SystemClock_Config(void)
 {
