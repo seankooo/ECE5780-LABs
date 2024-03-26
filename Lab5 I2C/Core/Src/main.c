@@ -238,273 +238,273 @@ int main(void)
 											
   /* USER CODE END 2 */
 
-// 
-//	
-////---------------------First Checkoff Starts-----------------------
-
-//	/*--------------------WRITE------------------------------------*/
-//  while (1)
-//  { 
-//		if((I2C2->ISR & I2C_ISR_TXIS)){
-//			break;
-//		}
-//	}
-//	//setting the address of the who-am-i register to 0x0F
-//	 I2C2->TXDR = 0x0F;
-//	
-//	//Wait for TC flag
-//	 while(1){
-//		 if((I2C2->ISR & I2C_ISR_TC)){
-//			 break;
-//		 }
-//	 }
-//		// SADD(SLAVE ADDRESS) TO 0X69 = 0110 1001
-
-//	I2C2->CR2 |= (1<<1);
-//	I2C2->CR2 &= ~(1<<2);
-//	I2C2->CR2 &= ~(1<<3);
-//	I2C2->CR2 |= (1<<4);
-//	
-//	I2C2->CR2 &= ~(1<<5);
-//	I2C2->CR2 |= (1<<6);
-//	I2C2->CR2 |= (1<<7);
-//			//SET NUMBER OF BYTES TO TRANSMIT TO 1
-//			I2C2->CR2 |= (0x01<<16);
-//		
-
-//			// RD_WRN TO READ89
-//			I2C2->CR2 |= (1<<10);
-//			
-//			//SET START BIT
-//			I2C2->CR2 |= (1<<13);
-//			
-//	/*------------------------READ---------------------------*/
-//			
-//			while(1){
-//				if((I2C2-> ISR & I2C_ISR_RXNE)){
-//					break;
-//				}
-//			}
-//			while(1){
-//				if((I2C2->ISR & I2C_ISR_TC)){
-//					break;
-//				}
-//			}
-//			  
-//		if(I2C2->RXDR == 0xD3){
-//			GPIOC->ODR |= (1 << 9);
-//		}
-//		 I2C2->CR2 |= (1 << 14);
-//}
-
-
-//// ------------------------------First checkoff End----------------------------
-
-
-//--------------------------Second Checkoff Start--------------------------------
-// address for the gyroscope is 0x69
-//enable gyroscope
-// SADD(SLAVE ADDRESS) TO 0X69 = 0110 1001
-	I2C2->CR2|= (0x69<<1);
+ 
 	
-//	I2C2->CR2 |= (1<<1);
-//	I2C2->CR2 &= ~(1<<2);
-//	I2C2->CR2 &= ~(1<<3);
-//	I2C2->CR2 |= (1<<4);
-//	
-//	I2C2->CR2 &= ~(1<<5);
-//	I2C2->CR2 |= (1<<6);
-//	I2C2->CR2 |= (1<<7);
+//---------------------First Checkoff Starts-----------------------
 
-	//SET NUMBER OF BYTES TO TRANSMIT TO 2
-//	
-	I2C2->CR2 &= ~(1<<16);
-	I2C2->CR2 |= (1<<17);
-
-
-// RD_WRN TO WRITE =0
-	I2C2->CR2 &= ~(1<<10);
-	
-	//SET START BIT
-	I2C2->CR2 |= (1<<13);
-	
-	/*--------------------Enable Gyroscope - normal mode, enX, enY ------------------------------------*/
+	/*--------------------WRITE------------------------------------*/
   while (1)
   { 
 		if((I2C2->ISR & I2C_ISR_TXIS)){
 			break;
 		}
 	}
-	//setting the address of the CTRL_REG1
-	 I2C2->TXDR = 0x20;
+	//setting the address of the who-am-i register to 0x0F
+	 I2C2->TXDR = 0x0F;
 	
-	 while (1)
-  { 
-		if((I2C2->ISR & I2C_ISR_TXIS)){
-			break;
-		}
-	}
-		 I2C2->TXDR = 0xB;		// 1011
-
 	//Wait for TC flag
 	 while(1){
 		 if((I2C2->ISR & I2C_ISR_TC)){
 			 break;
 		 }
 	 }
-	I2C2->CR2 |= (1 << 14); //stop
-	
-		
-			
-	/*------------------------Read X Data---------------------------*/
-	 
-			//initiate x,y variables
-	 int8_t x1;
-	 int8_t x2;
-	 int8_t y1;
-	 int8_t y2;
-	 int16_t x;
-	 int16_t y;
-	 
-		while(1){
-		HAL_Delay(100);
-				//SET NUMBER OF BYTES TO TRANSMIT TO 1
-		I2C2->CR2 |= (1<<16);
-		I2C2->CR2 &= ~(1<<17);
+		// SADD(SLAVE ADDRESS) TO 0X69 = 0110 1001
 
-			// RD_WRN TO Write
-		I2C2->CR2 &= ~(1<<10);
+	I2C2->CR2 |= (1<<1);
+	I2C2->CR2 &= ~(1<<2);
+	I2C2->CR2 &= ~(1<<3);
+	I2C2->CR2 |= (1<<4);
+	
+	I2C2->CR2 &= ~(1<<5);
+	I2C2->CR2 |= (1<<6);
+	I2C2->CR2 |= (1<<7);
+			//SET NUMBER OF BYTES TO TRANSMIT TO 1
+			I2C2->CR2 |= (0x01<<16);
+		
+
+			// RD_WRN TO READ89
+			I2C2->CR2 |= (1<<10);
 			
 			//SET START BIT
-		I2C2->CR2 |= (1<<13);
-		
-				while(1) {
-					if((I2C2-> ISR & I2C_ISR_TXIS)){
-						break;
-					}
-				}
-		I2C2->TXDR = 0xA8; //x data h, l combined
+			I2C2->CR2 |= (1<<13);
 			
+	/*------------------------READ---------------------------*/
+			
+			while(1){
+				if((I2C2-> ISR & I2C_ISR_RXNE)){
+					break;
+				}
+			}
 			while(1){
 				if((I2C2->ISR & I2C_ISR_TC)){
 					break;
 				}
 			}
-			
-				//SET NUMBER OF BYTES TO TRANSMIT TO 2
-		I2C2->CR2 &= ~(1<<16);
-		I2C2->CR2 |= (1<<17);
-
-			// RD_WRN TO READ (READ=1, WRT=0)
-		I2C2->CR2 |= (1<<10);
-			
-			//SET START BIT 
-		I2C2->CR2 |= (1<<13);
-			
-			while(1) {
-					if((I2C2-> ISR & I2C_ISR_RXNE)){
-						break;
-					}
-				}
-			x1= I2C2->RXDR;
-				
-			while(1) {
-					if((I2C2-> ISR & I2C_ISR_RXNE)){
-						break;
-					}
-			}
-			x2=  I2C2->RXDR;
-			while(1){
-				if((I2C2->ISR & I2C_ISR_TC)){
-					break;
-				}
-			}
-			//stop
-			I2C2->CR2 |= (1<<14);
-			
 			  
-//----------------------READ Y DATA----------------------
-				//SET NUMBER OF BYTES TO TRANSMIT TO 1
-		I2C2->CR2 |= (1<<16);
-		I2C2->CR2 &= ~(1<<17);
-			// RD_WRN TO write (READ=1, WRT=0)
-		I2C2->CR2 &= ~(1<<10);
-			//SET START BIT
-		I2C2->CR2 |= (1<<13);
-			
-			// SEND Y ADDRESS
-				while(1) {
-					if((I2C2-> ISR & I2C_ISR_TXIS)){
-						break;
-					}
-				}
-		I2C2->TXDR = 0xAA;	// Y DATA LOW, HIGH COMBINED ADDRESS
-			
-			while(1){
-				if((I2C2->ISR & I2C_ISR_TC)){
-					break;
-				}
-			}
-				//SET NUMBER OF BYTES TO TRANSMIT TO 2
-		I2C2->CR2 &= ~(1<<16);
-		I2C2->CR2 |= (1<<17);
-
-			// RD_WRN TO READ (READ=1, WRT=0)
-		I2C2->CR2 |= (1<<10);
-			
-			//SET START BIT 
-		I2C2->CR2 |= (1<<13);
-
-			//RX Y DATA
-	while(1) {
-					if((I2C2-> ISR & I2C_ISR_RXNE)){
-						break;
-					}
-				}
-			y1= I2C2->RXDR;
-				
-			while(1) {
-					if((I2C2-> ISR & I2C_ISR_RXNE)){
-						break;
-					}
-			}
-			y2=  I2C2->RXDR;
-			while(1){
-				if((I2C2->ISR & I2C_ISR_TC)){
-					break;
-				}
-			}
-			// stop transaction
-			I2C2->CR2 |= (1<<14);
-			
-		//--------------------end of x,y data read-----------------------------
-		x = (uint16_t)((x2 << 8) | x1);
-		y = (uint16_t)((y2 << 8) | y1);
-			int threshhold= 130;
-
-	if (x > threshhold) {	// x,y  value default = +-245 
-		//turn green on, orange off
+		if(I2C2->RXDR == 0xD3){
 			GPIOC->ODR |= (1 << 9);
-		  GPIOC->ODR &= ~(1 << 8);
-	}
-	else if (x < -threshhold){
-			// turn Orange on, green off
-			GPIOC->ODR |= (1 << 8);
-		  GPIOC->ODR &= ~(1 << 9);
-	}
-	
-	else if( y >threshhold){
-		//turn red on, blue off
-			GPIOC->ODR |= (1 << 6);
-		  GPIOC->ODR &= ~(1 << 7);
-	}
-		else if( y < -threshhold){
-			//turn blue on, red off
-			GPIOC->ODR |= (1 << 7);
-		  GPIOC->ODR &= ~(1 << 6);
-	}
-	
+		}
+		 I2C2->CR2 |= (1 << 14);
 }
+
+
+// ------------------------------First checkoff End----------------------------
+
+
+////--------------------------Second Checkoff Start--------------------------------
+//// address for the gyroscope is 0x69
+////enable gyroscope
+//// SADD(SLAVE ADDRESS) TO 0X69 = 0110 1001
+//	I2C2->CR2|= (0x69<<1);
+//	
+////	I2C2->CR2 |= (1<<1);
+////	I2C2->CR2 &= ~(1<<2);
+////	I2C2->CR2 &= ~(1<<3);
+////	I2C2->CR2 |= (1<<4);
+////	
+////	I2C2->CR2 &= ~(1<<5);
+////	I2C2->CR2 |= (1<<6);
+////	I2C2->CR2 |= (1<<7);
+
+//	//SET NUMBER OF BYTES TO TRANSMIT TO 2
+////	
+//	I2C2->CR2 &= ~(1<<16);
+//	I2C2->CR2 |= (1<<17);
+
+
+//// RD_WRN TO WRITE =0
+//	I2C2->CR2 &= ~(1<<10);
+//	
+//	//SET START BIT
+//	I2C2->CR2 |= (1<<13);
+//	
+//	/*--------------------Enable Gyroscope - normal mode, enX, enY ------------------------------------*/
+//  while (1)
+//  { 
+//		if((I2C2->ISR & I2C_ISR_TXIS)){
+//			break;
+//		}
+//	}
+//	//setting the address of the CTRL_REG1
+//	 I2C2->TXDR = 0x20;
+//	
+//	 while (1)
+//  { 
+//		if((I2C2->ISR & I2C_ISR_TXIS)){
+//			break;
+//		}
+//	}
+//		 I2C2->TXDR = 0xB;		// 1011
+
+//	//Wait for TC flag
+//	 while(1){
+//		 if((I2C2->ISR & I2C_ISR_TC)){
+//			 break;
+//		 }
+//	 }
+//	I2C2->CR2 |= (1 << 14); //stop
+//	
+//		
+//			
+//	/*------------------------Read X Data---------------------------*/
+//	 
+//			//initiate x,y variables
+//	 int8_t x1;
+//	 int8_t x2;
+//	 int8_t y1;
+//	 int8_t y2;
+//	 int16_t x;
+//	 int16_t y;
+//	 
+//		while(1){
+//		HAL_Delay(100);
+//				//SET NUMBER OF BYTES TO TRANSMIT TO 1
+//		I2C2->CR2 |= (1<<16);
+//		I2C2->CR2 &= ~(1<<17);
+
+//			// RD_WRN TO Write
+//		I2C2->CR2 &= ~(1<<10);
+//			
+//			//SET START BIT
+//		I2C2->CR2 |= (1<<13);
+//		
+//				while(1) {
+//					if((I2C2-> ISR & I2C_ISR_TXIS)){
+//						break;
+//					}
+//				}
+//		I2C2->TXDR = 0xA8; //x data h, l combined
+//			
+//			while(1){
+//				if((I2C2->ISR & I2C_ISR_TC)){
+//					break;
+//				}
+//			}
+//			
+//				//SET NUMBER OF BYTES TO TRANSMIT TO 2
+//		I2C2->CR2 &= ~(1<<16);
+//		I2C2->CR2 |= (1<<17);
+
+//			// RD_WRN TO READ (READ=1, WRT=0)
+//		I2C2->CR2 |= (1<<10);
+//			
+//			//SET START BIT 
+//		I2C2->CR2 |= (1<<13);
+//			
+//			while(1) {
+//					if((I2C2-> ISR & I2C_ISR_RXNE)){
+//						break;
+//					}
+//				}
+//			x1= I2C2->RXDR;
+//				
+//			while(1) {
+//					if((I2C2-> ISR & I2C_ISR_RXNE)){
+//						break;
+//					}
+//			}
+//			x2=  I2C2->RXDR;
+//			while(1){
+//				if((I2C2->ISR & I2C_ISR_TC)){
+//					break;
+//				}
+//			}
+//			//stop
+//			I2C2->CR2 |= (1<<14);
+//			
+//			  
+////----------------------READ Y DATA----------------------
+//				//SET NUMBER OF BYTES TO TRANSMIT TO 1
+//		I2C2->CR2 |= (1<<16);
+//		I2C2->CR2 &= ~(1<<17);
+//			// RD_WRN TO write (READ=1, WRT=0)
+//		I2C2->CR2 &= ~(1<<10);
+//			//SET START BIT
+//		I2C2->CR2 |= (1<<13);
+//			
+//			// SEND Y ADDRESS
+//				while(1) {
+//					if((I2C2-> ISR & I2C_ISR_TXIS)){
+//						break;
+//					}
+//				}
+//		I2C2->TXDR = 0xAA;	// Y DATA LOW, HIGH COMBINED ADDRESS
+//			
+//			while(1){
+//				if((I2C2->ISR & I2C_ISR_TC)){
+//					break;
+//				}
+//			}
+//				//SET NUMBER OF BYTES TO TRANSMIT TO 2
+//		I2C2->CR2 &= ~(1<<16);
+//		I2C2->CR2 |= (1<<17);
+
+//			// RD_WRN TO READ (READ=1, WRT=0)
+//		I2C2->CR2 |= (1<<10);
+//			
+//			//SET START BIT 
+//		I2C2->CR2 |= (1<<13);
+
+//			//RX Y DATA
+//	while(1) {
+//					if((I2C2-> ISR & I2C_ISR_RXNE)){
+//						break;
+//					}
+//				}
+//			y1= I2C2->RXDR;
+//				
+//			while(1) {
+//					if((I2C2-> ISR & I2C_ISR_RXNE)){
+//						break;
+//					}
+//			}
+//			y2=  I2C2->RXDR;
+//			while(1){
+//				if((I2C2->ISR & I2C_ISR_TC)){
+//					break;
+//				}
+//			}
+//			// stop transaction
+//			I2C2->CR2 |= (1<<14);
+//			
+//		//--------------------end of x,y data read-----------------------------
+//		x = (uint16_t)((x2 << 8) | x1);
+//		y = (uint16_t)((y2 << 8) | y1);
+//			int threshhold= 130;
+
+//	if (x > threshhold) {	// x,y  value default = +-245 
+//		//turn green on, orange off
+//			GPIOC->ODR |= (1 << 9);
+//		  GPIOC->ODR &= ~(1 << 8);
+//	}
+//	else if (x < -threshhold){
+//			// turn Orange on, green off
+//			GPIOC->ODR |= (1 << 8);
+//		  GPIOC->ODR &= ~(1 << 9);
+//	}
+//	
+//	else if( y >threshhold){
+//		//turn red on, blue off
+//			GPIOC->ODR |= (1 << 6);
+//		  GPIOC->ODR &= ~(1 << 7);
+//	}
+//		else if( y < -threshhold){
+//			//turn blue on, red off
+//			GPIOC->ODR |= (1 << 7);
+//		  GPIOC->ODR &= ~(1 << 6);
+//	}
+//	
+//}
 		
 
 
@@ -519,7 +519,7 @@ int main(void)
 
 
 
-}
+
 
 
 
