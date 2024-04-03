@@ -163,7 +163,7 @@ int main(void)
 	
 	while(1) 
 	{
-	//	data = ADC1->DR;
+		data = ADC1->DR;
 		
 		
 		// 2nd
@@ -179,37 +179,37 @@ int main(void)
 		}
 		//
 		
-//		
-//		if(data < th1)
-//		{
-//			GPIOC->ODR &= ~(1 << 6);
-//			GPIOC->ODR &= ~(1 << 7);
-//			GPIOC->ODR &= ~(1 << 8);
-//			GPIOC->ODR &= ~(1 << 9);
-//		}
-//	
-//		else if((data > th1) && (data < th2))
-//		{
-//			GPIOC->ODR |= (1 << 6);
-//			GPIOC->ODR &= ~(1 << 7);
-//		}
-//	
-//		else if((data > th2) && (data < th3))
-//		{
-//			GPIOC->ODR |= (1 << 7);
-//			GPIOC->ODR &= ~(1 << 8);
-//		}
-//	
-//		else if((data > th3) && (data < th4))
-//		{
-//			GPIOC->ODR |= (1 << 8);
-//			GPIOC->ODR &= ~(1 << 9);
-//		}
-//	
-//		else if(data > th4)
-//		{
-//			GPIOC->ODR |= (1 << 9);
-//		}
+		
+		if(data < th1)
+		{
+			GPIOC->ODR &= ~(1 << 6);
+			GPIOC->ODR &= ~(1 << 9);
+			GPIOC->ODR &= ~(1 << 8);
+			GPIOC->ODR &= ~(1 << 7);
+		}
+	
+		else if((data > th1) && (data < th2))
+		{
+			GPIOC->ODR |= (1 << 6);  //red
+			GPIOC->ODR &= ~(1 << 9);	//green
+		}
+	
+		else if((data > th2) && (data < th3))
+		{
+			GPIOC->ODR |= (1 << 9);			//green
+			GPIOC->ODR &= ~(1 << 7);		//blue
+		}
+	
+		else if((data > th3) && (data < th4))
+		{
+			GPIOC->ODR |= (1 << 7);		//blue
+			GPIOC->ODR &= ~(1 << 8);		//orange
+		}
+	
+		else if(data > th4)
+		{
+			GPIOC->ODR |= (1 << 8);		//orange
+		}
 	}
  
 } // main int method
